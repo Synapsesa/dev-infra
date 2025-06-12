@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  account-service-postgres:
+    image: postgres:latest
+    container_name: account-service-postgres
+    restart: always
+    ports:
+      - 5434:5434
+    environment:
+      POSTGRES_USER: donghyeon
+      POSTGRES_PASSWORD: adzc1973
+      POSTGRES_DB: account-service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U donghyeon -d account-service"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - account-service-postgres-data:/var/lib/postgresql/data
+    networks:
+      - dev-infra-network
+      
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - dev-infra-network
+
+volumes:
+  account-service-postgres-data:
+
+networks:
+  dev-infra-network:
+    driver: bridge
