@@ -6,7 +6,7 @@ services:
     container_name: account-service-postgres
     restart: always
     ports:
-      - 5434:5434
+      - 5434:5432
     environment:
       POSTGRES_USER: donghyeon
       POSTGRES_PASSWORD: adzc1973
@@ -21,7 +21,7 @@ services:
       - account-service-postgres-data:/var/lib/postgresql/data
     networks:
       - dev-infra-network
-      
+
   adminer:
     image: adminer
     restart: always
