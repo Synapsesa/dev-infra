@@ -21,6 +21,27 @@ services:
       - account-service-postgres-data:/var/lib/postgresql/data
     networks:
       - dev-infra-network
+      
+  payment-service-postgres:
+    image: postgres:latest
+    container_name: payment-service-postgres
+    restart: always
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: donghyeon
+      POSTGRES_PASSWORD: adzc1973
+      POSTGRES_DB: payment-service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U donghyeon -d payment-service"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - payment-service-postgres-data:/var/lib/postgresql/data
+    networks:
+      - dev-infra-network
 
   adminer:
     image: adminer
@@ -32,6 +53,7 @@ services:
 
 volumes:
   account-service-postgres-data:
+  payment-service-postgres-data:
 
 networks:
   dev-infra-network:
