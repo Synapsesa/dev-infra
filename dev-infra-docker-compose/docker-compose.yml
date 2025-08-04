@@ -42,6 +42,27 @@ services:
       - payment-service-postgres-data:/var/lib/postgresql/data
     networks:
       - dev-infra-network
+  
+  chat-service-postgres:
+    image: postgres:latest
+    container_name: chat-service-postgres
+    restart: always
+    ports:
+      - 5436:5432
+    environment:
+      POSTGRES_USER: donghyeon
+      POSTGRES_PASSWORD: adzc1973
+      POSTGRES_DB: chat-service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U donghyeon -d chat-service"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - chat-service-postgres-data:/var/lib/postgresql/data
+    networks:
+      - dev-infra-network
 
   adminer:
     image: adminer
@@ -51,9 +72,19 @@ services:
     networks:
       - dev-infra-network
 
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: unless-stopped
+    network_mode: "host"
+    command: ["http", "localhost:1002"]
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+
 volumes:
   account-service-postgres-data:
   payment-service-postgres-data:
+  chat-service-postgres-data:
 
 networks:
   dev-infra-network:
